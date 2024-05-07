@@ -3,8 +3,7 @@ const std = @import("std");
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
-    // const t = target.result;
-    
+    // const t = target.result;s
     const lib = b.addStaticLibrary(.{
         .name = "sfml",
         .target = target,
@@ -15,8 +14,18 @@ pub fn build(b: *std.Build) void {
     lib.addIncludePath(.{ .path = "extlibs/headers/glad/include" });
     lib.addIncludePath(.{ .path = "extlibs/headers/stb_image" });
     lib.addIncludePath(.{ .path = "extlibs/headers/freetype2" });
-    // lib.addIncludePath(.{ .path = "extlibs/headers/miniaudio" });
+    lib.addIncludePath(.{ .path = "extlibs/headers/ogg" });
+    lib.addIncludePath(.{ .path = "extlibs/headers/vorbis" });
+    lib.addIncludePath(.{ .path = "extlibs/headers/miniaudio" });
     // lib.addIncludePath(.{ .path = "extlibs/headers/FLAC" });
+
+    const config_values = .{
+        .DEBUG = 1,
+    };
+
+    lib.addConfigHeader(b.addConfigHeader(.{
+        .style = .blank,
+    }, config_values));
 
     lib.addCSourceFiles(.{
         .files = &graphics_src_files,
@@ -26,6 +35,9 @@ pub fn build(b: *std.Build) void {
     });
     lib.addCSourceFiles(.{
         .files = &window_src_files,
+    });
+    lib.addCSourceFiles(.{
+        .files = &network_src_files,
     });
     // lib.addCSourceFiles(.{
     //     .files = &audio_src_files,
@@ -38,34 +50,36 @@ pub fn build(b: *std.Build) void {
     lib.installHeadersDirectory("extlibs/headers/glad/include", "sfml/extlibs/headers/glad/include/glad");
     lib.installHeadersDirectory("extlibs/headers/stb_image", "sfml/extlibs/headers/stb_image");
     lib.installHeadersDirectory("extlibs/headers/freetype2", "sfml/extlibs/headers/freetype2");
-    // lib.installHeadersDirectory("extlibs/headers/miniaudio", "sfml/extlibs/headers/miniaudio");
+    lib.installHeadersDirectory("extlibs/headers/ogg", "sfml/extlibs/headers/ogg");
+    lib.installHeadersDirectory("extlibs/headers/vorbis", "sfml/extlibs/headers/vorbis");
+    lib.installHeadersDirectory("extlibs/headers/miniaudio", "sfml/extlibs/headers/miniaudio");
     // lib.installHeadersDirectory("extlibs/headers/FLAC", "sfml/extlibs/headers/FLAC");
     b.installArtifact(lib);
 }
 
 const audio_src_files = [_][]const u8{
     "src/SFML/Audio/AudioDevice.cpp",
-    "src/SFML/Audio/AudioResource.cpp",
-    "src/SFML/Audio/InputSoundFile.cpp",
-    "src/SFML/Audio/Listener.cpp",
-    "src/SFML/Audio/Miniaudio.cpp",
-    "src/SFML/Audio/MiniaudioUtils.cpp",
-    "src/SFML/Audio/Music.cpp",
-    "src/SFML/Audio/OutputSoundFile.cpp",
-    "src/SFML/Audio/Sound.cpp",
-    "src/SFML/Audio/SoundBuffer.cpp",
-    "src/SFML/Audio/SoundBufferRecorder.cpp",
-    "src/SFML/Audio/SoundFileFactory.cpp",
-    "src/SFML/Audio/SoundFileReaderFlac.cpp",
-    "src/SFML/Audio/SoundFileReaderMp3.cpp",
-    "src/SFML/Audio/SoundFileReaderOgg.cpp",
-    "src/SFML/Audio/SoundFileReaderWav.cpp",
-    "src/SFML/Audio/SoundFileWriterFlac.cpp",
-    "src/SFML/Audio/SoundFileWriterOgg.cpp",
-    "src/SFML/Audio/SoundFileWriterWav.cpp",
-    "src/SFML/Audio/SoundRecorder.cpp",
-    "src/SFML/Audio/SoundSource.cpp",
-    "src/SFML/Audio/SoundStream.cpp",
+    // "src/SFML/Audio/AudioResource.cpp",
+    // "src/SFML/Audio/InputSoundFile.cpp",
+    // "src/SFML/Audio/Listener.cpp",
+    // "src/SFML/Audio/Miniaudio.cpp",
+    // "src/SFML/Audio/MiniaudioUtils.cpp",
+    // "src/SFML/Audio/Music.cpp",
+    // "src/SFML/Audio/OutputSoundFile.cpp",
+    // "src/SFML/Audio/Sound.cpp",
+    // "src/SFML/Audio/SoundBuffer.cpp",
+    // "src/SFML/Audio/SoundBufferRecorder.cpp",
+    // "src/SFML/Audio/SoundFileFactory.cpp",
+    // "src/SFML/Audio/SoundFileReaderFlac.cpp",
+    // "src/SFML/Audio/SoundFileReaderMp3.cpp",
+    // "src/SFML/Audio/SoundFileReaderOgg.cpp",
+    // "src/SFML/Audio/SoundFileReaderWav.cpp",
+    // "src/SFML/Audio/SoundFileWriterFlac.cpp",
+    // "src/SFML/Audio/SoundFileWriterOgg.cpp",
+    // "src/SFML/Audio/SoundFileWriterWav.cpp",
+    // "src/SFML/Audio/SoundRecorder.cpp",
+    // "src/SFML/Audio/SoundSource.cpp",
+    // "src/SFML/Audio/SoundStream.cpp",
 };
 
 const window_src_files = [_][]const u8{
@@ -88,6 +102,18 @@ const window_src_files = [_][]const u8{
     "src/SFML/Window/Window.cpp",
     "src/SFML/Window/WindowBase.cpp",
     "src/SFML/Window/WindowImpl.cpp",
+};
+
+const network_src_files = [_][]const u8{
+    "src/SFML/Network/Ftp.cpp",
+    "src/SFML/Network/Http.cpp",
+    "src/SFML/Network/IpAddress.cpp",
+    "src/SFML/Network/Packet.cpp",
+    "src/SFML/Network/Socket.cpp",
+    "src/SFML/Network/SocketSelector.cpp",
+    "src/SFML/Network/TcpListener.cpp",
+    "src/SFML/Network/TcpSocket.cpp",
+    "src/SFML/Network/UdpSocket.cpp",
 };
 
 const system_src_files = [_][]const u8{
