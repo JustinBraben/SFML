@@ -61,7 +61,7 @@ pub fn build(b: *std.Build) void {
         },
     }
 
-    sfml_system_lib.installHeadersDirectory("extlibs", "extlibs");
+    sfml_system_lib.installHeadersDirectory("extlibs/headers", "extlibs/headers");
     sfml_system_lib.installHeadersDirectory("include", "include");
     sfml_system_lib.installHeadersDirectory("src", "src");
 
