@@ -15,7 +15,7 @@ pub fn buildSFMLSystem(b: *std.Build) void {
     sfml_system_lib.addIncludePath(.{ .path = "extlibs/headers" });
 
     sfml_system_lib.addCSourceFiles(.{
-        .files = &system_src_files,
+        .files = &generic_system_src_files,
     });
 
     sfml_system_lib.linkLibC();
@@ -28,9 +28,10 @@ pub fn buildSFMLSystem(b: *std.Build) void {
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
+    const t = target.result;
 
     const sfml_system_lib = b.addStaticLibrary(.{
-        .name = "sfml-system",
+        .name = "sfml",
         .target = target,
         .optimize = optimize,
     });
@@ -40,11 +41,25 @@ pub fn build(b: *std.Build) void {
     sfml_system_lib.addIncludePath(.{ .path = "extlibs/headers" });
 
     sfml_system_lib.addCSourceFiles(.{
-        .files = &system_src_files,
+        .files = &generic_system_src_files,
     });
 
     sfml_system_lib.linkLibC();
     sfml_system_lib.linkLibCpp();
+
+    switch (t.os.tag) {
+        .windows => {
+            sfml_system_lib.addCSourceFiles(.{
+                .files = &windows_system_src_files,
+            });
+        },
+        .macos => {
+
+        },
+        else => {
+
+        },
+    }
 
     sfml_system_lib.installHeadersDirectory("extlibs", "extlibs");
     sfml_system_lib.installHeadersDirectory("include", "include");
@@ -85,7 +100,7 @@ pub fn buildOLD(b: *std.Build) void {
     //     .files = &graphics_src_files,
     // });
     lib.addCSourceFiles(.{
-        .files = &system_src_files,
+        .files = &generic_system_src_files,
     });
     // lib.addCSourceFiles(.{
     //     .files = &window_src_files,
@@ -170,7 +185,7 @@ const network_src_files = [_][]const u8{
     "src/SFML/Network/UdpSocket.cpp",
 };
 
-const system_src_files = [_][]const u8{
+const generic_system_src_files = [_][]const u8{
     "src/SFML/System/Clock.cpp",
     "src/SFML/System/Err.cpp",
     "src/SFML/System/FileInputStream.cpp",
@@ -180,6 +195,10 @@ const system_src_files = [_][]const u8{
     "src/SFML/System/Utils.cpp",
     "src/SFML/System/Vector2.cpp",
     "src/SFML/System/Vector3.cpp",
+};
+
+const windows_system_src_files = [_][]const u8{
+    "src/SFML/System/Win32/SleepImpl.cpp",
 };
 
 const graphics_src_files = [_][]const u8{
