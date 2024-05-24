@@ -3,6 +3,7 @@ const std = @import("std");
 pub fn buildSFMLSystem(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
+    const t = target.result;
 
     const sfml_system_lib = b.addStaticLibrary(.{
         .name = "sfml-system",
@@ -10,22 +11,139 @@ pub fn buildSFMLSystem(b: *std.Build) void {
         .optimize = optimize,
     });
 
-    sfml_system_lib.addIncludePath(.{ .path = "include" });
-    sfml_system_lib.addIncludePath(.{ .path = "src" });
-    sfml_system_lib.addIncludePath(.{ .path = "extlibs/headers" });
+    sfml_system_lib.addIncludePath(.{ .path = "include/SFML/System" });
+    sfml_system_lib.addIncludePath(.{ .path = "src/SFML/System" });
+    sfml_system_lib.linkLibC();
+    sfml_system_lib.linkLibCpp();
 
     sfml_system_lib.addCSourceFiles(.{
         .files = &generic_system_src_files,
     });
 
-    sfml_system_lib.linkLibC();
-    sfml_system_lib.linkLibCpp();
+    switch (t.os.tag) {
+        .windows => {
+            
+        },
+        .macos => {
+            
+        },
+        else => {
+            
+        },
+    }
 
-    sfml_system_lib.installHeadersDirectory("include", "sfml-system");
-    sfml_system_lib.installHeadersDirectory("src", "sfml-system");
+    sfml_system_lib.installHeadersDirectory("include", "SFML");
+    sfml_system_lib.installHeadersDirectory("src", "SFML");
+
+    b.installArtifact(sfml_system_lib);
+}
+
+pub fn buildSFMLWindow(b: *std.Build) void {
+    const target = b.standardTargetOptions(.{});
+    const optimize = b.standardOptimizeOption(.{});
+    const t = target.result;
+
+    const sfml_window_lib = b.addStaticLibrary(.{
+        .name = "sfml-window",
+        .target = target,
+        .optimize = optimize,
+    });
+
+    sfml_window_lib.addIncludePath(.{ .path = "include/SFML/Window" });
+    sfml_window_lib.addIncludePath(.{ .path = "src/SFML/Window" });
+    sfml_window_lib.linkLibC();
+    sfml_window_lib.linkLibCpp();
+
+    sfml_window_lib.addCSourceFiles(.{
+        .files = &window_src_files,
+    });
+
+    switch (t.os.tag) {
+        .windows => {
+            
+        },
+        .macos => {
+            
+        },
+        else => {
+            
+        },
+    }
+
+    sfml_window_lib.installHeadersDirectory("include", "include");
+    sfml_window_lib.installHeadersDirectory("src", "src");
+
+    b.installArtifact(sfml_window_lib);
 }
 
 pub fn build(b: *std.Build) void {
+    const target = b.standardTargetOptions(.{});
+    const optimize = b.standardOptimizeOption(.{});
+    // const t = target.result;s
+    const lib = b.addStaticLibrary(.{
+        .name = "sfml",
+        .target = target,
+        .optimize = optimize,
+    });
+    lib.addIncludePath(.{ .path = "include" });
+    lib.addIncludePath(.{ .path = "src" });
+    lib.addIncludePath(.{ .path = "extlibs/headers/freetype2" });
+    lib.addIncludePath(.{ .path = "extlibs/headers/glad/include" });
+    lib.addIncludePath(.{ .path = "extlibs/headers/mingw" });
+    lib.addIncludePath(.{ .path = "extlibs/headers/miniaudio" });
+    lib.addIncludePath(.{ .path = "extlibs/headers/minimp3" });
+    lib.addIncludePath(.{ .path = "extlibs/headers/ogg" });
+    lib.addIncludePath(.{ .path = "extlibs/headers/stb_image" });
+    lib.addIncludePath(.{ .path = "extlibs/headers/vorbis" });
+    lib.addIncludePath(.{ .path = "extlibs/headers/vulkan" });
+    // lib.addIncludePath(.{ .path = "extlibs/headers/FLAC" });
+
+    // const config_values = .{
+    //     // .DEBUG = 1,
+    //     .SFML_API_IMPORT = 1,
+    //     .SFML_API_EXPORT = 1,
+    // };
+
+    // lib.addConfigHeader(b.addConfigHeader(.{
+    //     .style = .blank,
+    // }, config_values));
+
+    lib.addCSourceFiles(.{
+        .files = &generic_system_src_files,
+    });
+    lib.addCSourceFiles(.{
+        .files = &window_src_files,
+    });
+    // lib.addCSourceFiles(.{
+    //     .files = &graphics_src_files,
+    // });
+    // lib.addCSourceFiles(.{
+    //     .files = &network_src_files,
+    // });
+    // lib.addCSourceFiles(.{
+    //     .files = &audio_src_files,
+    // });
+
+    // lib.defineCMacro("SFML_GRAPHICS_API", "1");
+
+    lib.linkLibC();
+    lib.linkLibCpp();
+    lib.installHeadersDirectory("include", "sfml");
+    lib.installHeadersDirectory("src", "sfml");
+    lib.installHeadersDirectory("extlibs/headers/freetype2", "sfml/extlibs/headers/freetype2");
+    lib.installHeadersDirectory("extlibs/headers/glad/include", "sfml/extlibs/headers/glad/include/glad");
+    lib.installHeadersDirectory("extlibs/headers/mingw", "sfml/extlibs/headers/mingw");
+    lib.installHeadersDirectory("extlibs/headers/miniaudio", "sfml/extlibs/headers/miniaudio");
+    lib.installHeadersDirectory("extlibs/headers/minimp3", "sfml/extlibs/headers/minimp3");
+    lib.installHeadersDirectory("extlibs/headers/ogg", "sfml/extlibs/headers/ogg");
+    lib.installHeadersDirectory("extlibs/headers/stb_image", "sfml/extlibs/headers/stb_image");
+    lib.installHeadersDirectory("extlibs/headers/vorbis", "sfml/extlibs/headers/vorbis");
+    lib.installHeadersDirectory("extlibs/headers/vulkan", "sfml/extlibs/headers/vulkan");
+    // lib.installHeadersDirectory("extlibs/headers/FLAC", "sfml/extlibs/headers/FLAC");
+    b.installArtifact(lib);
+}
+
+pub fn buildWIP(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
     const t = target.result;
@@ -138,6 +256,15 @@ pub fn buildOLD(b: *std.Build) void {
     lib.installHeadersDirectory("extlibs/headers/FLAC", "sfml/extlibs/headers/FLAC");
     b.installArtifact(lib);
 }
+
+pub const Options = struct {
+    sfml_system: bool = true,
+    sfml_window: bool = true,
+    sfml_graphics: bool = true,
+    sfml_audio: bool = true,
+    sfml_network: bool = true,
+    shared: bool = false,
+};
 
 const audio_src_files = [_][]const u8{
     "src/SFML/Audio/AudioDevice.cpp",
