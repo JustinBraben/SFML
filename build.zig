@@ -79,14 +79,14 @@ pub fn buildOLD(b: *std.Build) void {
     });
     lib.addIncludePath(.{ .path = "include" });
     lib.addIncludePath(.{ .path = "src" });
-    lib.addIncludePath(.{ .path = "extlibs/headers" });
-    // lib.addIncludePath(.{ .path = "extlibs/headers/glad/include" });
-    // lib.addIncludePath(.{ .path = "extlibs/headers/stb_image" });
-    // lib.addIncludePath(.{ .path = "extlibs/headers/freetype2" });
-    // lib.addIncludePath(.{ .path = "extlibs/headers/ogg" });
-    // lib.addIncludePath(.{ .path = "extlibs/headers/vorbis" });
-    // lib.addIncludePath(.{ .path = "extlibs/headers/miniaudio" });
-    // lib.addIncludePath(.{ .path = "extlibs/headers/FLAC" });
+    // lib.addIncludePath(.{ .path = "extlibs/headers" });
+    lib.addIncludePath(.{ .path = "extlibs/headers/glad/include" });
+    lib.addIncludePath(.{ .path = "extlibs/headers/stb_image" });
+    lib.addIncludePath(.{ .path = "extlibs/headers/freetype2" });
+    lib.addIncludePath(.{ .path = "extlibs/headers/ogg" });
+    lib.addIncludePath(.{ .path = "extlibs/headers/vorbis" });
+    lib.addIncludePath(.{ .path = "extlibs/headers/miniaudio" });
+    lib.addIncludePath(.{ .path = "extlibs/headers/FLAC" });
 
     const config_values = .{
         .DEBUG = 1,
