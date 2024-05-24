@@ -116,13 +116,13 @@ pub fn buildOLD(b: *std.Build) void {
     lib.linkLibCpp();
     lib.installHeadersDirectory("include", "SFML");
     lib.installHeadersDirectory("src", "SFML");
-    // lib.installHeadersDirectory("extlibs/headers/glad/include", "sfml/extlibs/headers/glad/include/glad");
-    // lib.installHeadersDirectory("extlibs/headers/stb_image", "sfml/extlibs/headers/stb_image");
-    // lib.installHeadersDirectory("extlibs/headers/freetype2", "sfml/extlibs/headers/freetype2");
-    // lib.installHeadersDirectory("extlibs/headers/ogg", "sfml/extlibs/headers/ogg");
-    // lib.installHeadersDirectory("extlibs/headers/vorbis", "sfml/extlibs/headers/vorbis");
-    // lib.installHeadersDirectory("extlibs/headers/miniaudio", "sfml/extlibs/headers/miniaudio");
-    // lib.installHeadersDirectory("extlibs/headers/FLAC", "sfml/extlibs/headers/FLAC");
+    lib.installHeadersDirectory("extlibs/headers/glad/include", "sfml/extlibs/headers/glad/include/glad");
+    lib.installHeadersDirectory("extlibs/headers/stb_image", "sfml/extlibs/headers/stb_image");
+    lib.installHeadersDirectory("extlibs/headers/freetype2", "sfml/extlibs/headers/freetype2");
+    lib.installHeadersDirectory("extlibs/headers/ogg", "sfml/extlibs/headers/ogg");
+    lib.installHeadersDirectory("extlibs/headers/vorbis", "sfml/extlibs/headers/vorbis");
+    lib.installHeadersDirectory("extlibs/headers/miniaudio", "sfml/extlibs/headers/miniaudio");
+    lib.installHeadersDirectory("extlibs/headers/FLAC", "sfml/extlibs/headers/FLAC");
     b.installArtifact(lib);
 }
 
