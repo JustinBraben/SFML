@@ -166,7 +166,7 @@ String::String(const char* ansiString, const std::locale& locale)
 {
     if (ansiString)
     {
-        const std::size_t length = strlen(ansiString);
+        const std::size_t length = std::strlen(ansiString);
         if (length > 0)
         {
             m_string.reserve(length + 1);
@@ -264,10 +264,10 @@ std::wstring String::toWideString() const
 
 
 ////////////////////////////////////////////////////////////
-sf::U8String String::toUtf8() const
+U8String String::toUtf8() const
 {
     // Prepare the output string
-    sf::U8String output;
+    U8String output;
     output.reserve(m_string.length());
 
     // Convert

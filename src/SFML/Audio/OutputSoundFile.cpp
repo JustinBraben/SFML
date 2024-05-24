@@ -29,38 +29,39 @@
 #include <SFML/Audio/SoundFileFactory.hpp>
 #include <SFML/Audio/SoundFileWriter.hpp>
 
+#include <cassert>
+
 
 namespace sf
 {
 ////////////////////////////////////////////////////////////
-bool OutputSoundFile::openFromFile(const std::filesystem::path&     filename,
-                                   unsigned int                     sampleRate,
-                                   unsigned int                     channelCount,
-                                   const std::vector<SoundChannel>& channelMap)
+std::optional<OutputSoundFile> OutputSoundFile::openFromFile(
+    const std::filesystem::path&     filename,
+    unsigned int                     sampleRate,
+    unsigned int                     channelCount,
+    const std::vector<SoundChannel>& channelMap)
 {
-    // If the file is already open, first close it
-    close();
-
     // Find a suitable writer for the file type
-    m_writer = SoundFileFactory::createWriterFromFilename(filename);
-    if (!m_writer)
-        return false;
+    auto writer = SoundFileFactory::createWriterFromFilename(filename);
+    if (!writer)
+        return std::nullopt;
 
     // Pass the stream to the reader
-    if (!m_writer->open(filename, sampleRate, channelCount, channelMap))
+    if (!writer->open(filename, sampleRate, channelCount, channelMap))
     {
-        close();
-        return false;
+        return std::nullopt;
     }
 
-    return true;
+    return OutputSoundFile(std::move(writer));
 }
 
 
 ////////////////////////////////////////////////////////////
 void OutputSoundFile::write(const std::int16_t* samples, std::uint64_t count)
 {
-    if (m_writer && samples && count)
+    assert(m_writer);
+
+    if (samples && count)
         m_writer->write(samples, count);
 }
 
@@ -70,6 +71,12 @@ void OutputSoundFile::close()
 {
     // Destroy the reader
     m_writer.reset();
+}
+
+
+////////////////////////////////////////////////////////////
+OutputSoundFile::OutputSoundFile(std::unique_ptr<SoundFileWriter>&& writer) : m_writer(std::move(writer))
+{
 }
 
 } // namespace sf

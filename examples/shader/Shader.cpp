@@ -38,9 +38,6 @@ public:
             return false;
         m_sprite.emplace(m_texture);
 
-        // Load the shader
-        if (!m_shader.loadFromFile("resources/pixelate.frag", sf::Shader::Type::Fragment))
-            return false;
         m_shader.setUniform("texture", sf::Shader::CurrentTexture);
 
         return true;
@@ -60,7 +57,7 @@ public:
 private:
     sf::Texture               m_texture;
     std::optional<sf::Sprite> m_sprite;
-    sf::Shader                m_shader;
+    sf::Shader m_shader{sf::Shader::loadFromFile("resources/pixelate.frag", sf::Shader::Type::Fragment).value()};
 };
 
 
@@ -99,8 +96,7 @@ public:
         m_text.setCharacterSize(22);
         m_text.setPosition({30.f, 20.f});
 
-        // Load the shader
-        return m_shader.loadFromFile("resources/wave.vert", "resources/blur.frag");
+        return true;
     }
 
     void onUpdate(float time, float x, float y) override
@@ -118,7 +114,7 @@ public:
 
 private:
     sf::Text   m_text;
-    sf::Shader m_shader;
+    sf::Shader m_shader{sf::Shader::loadFromFile("resources/wave.vert", "resources/blur.frag").value()};
 };
 
 
@@ -150,8 +146,7 @@ public:
             m_points.append({{x, y}, {r, g, b}});
         }
 
-        // Load the shader
-        return m_shader.loadFromFile("resources/storm.vert", "resources/blink.frag");
+        return true;
     }
 
     void onUpdate(float time, float x, float y) override
@@ -171,7 +166,7 @@ public:
 
 private:
     sf::VertexArray m_points;
-    sf::Shader      m_shader;
+    sf::Shader      m_shader{sf::Shader::loadFromFile("resources/storm.vert", "resources/blink.frag").value()};
 };
 
 
@@ -187,9 +182,6 @@ public:
 
     bool onLoad() override
     {
-        // Create the off-screen surface
-        if (!m_surface.create({800, 600}))
-            return false;
         m_surface.setSmooth(true);
 
         // Load the textures
@@ -211,9 +203,7 @@ public:
             m_entities.push_back(entity);
         }
 
-        // Load the shader
-        if (!m_shader.loadFromFile("resources/edge.frag", sf::Shader::Type::Fragment))
-            return false;
+        // Set the shader uniform
         m_shader.setUniform("texture", sf::Shader::CurrentTexture);
 
         return true;
@@ -249,12 +239,12 @@ public:
     }
 
 private:
-    sf::RenderTexture         m_surface;
+    sf::RenderTexture         m_surface{sf::RenderTexture::create({800, 600}).value()};
     sf::Texture               m_backgroundTexture;
     sf::Texture               m_entityTexture;
     std::optional<sf::Sprite> m_backgroundSprite;
     std::vector<sf::Sprite>   m_entities;
-    sf::Shader                m_shader;
+    sf::Shader m_shader{sf::Shader::loadFromFile("resources/edge.frag", sf::Shader::Type::Fragment).value()};
 };
 
 
@@ -288,12 +278,15 @@ public:
             return false;
 
         // Load the shader
-        if (!m_shader.loadFromFile("resources/billboard.vert", "resources/billboard.geom", "resources/billboard.frag"))
+        m_shader = sf::Shader::loadFromFile("resources/billboard.vert",
+                                            "resources/billboard.geom",
+                                            "resources/billboard.frag");
+        if (!m_shader)
             return false;
-        m_shader.setUniform("texture", sf::Shader::CurrentTexture);
+        m_shader->setUniform("texture", sf::Shader::CurrentTexture);
 
         // Set the render resolution (used for proper scaling)
-        m_shader.setUniform("resolution", sf::Vector2f(800, 600));
+        m_shader->setUniform("resolution", sf::Vector2f(800, 600));
 
         return true;
     }
@@ -311,13 +304,13 @@ public:
         const float size = 25 + std::abs(y) * 50;
 
         // Update the shader parameter
-        m_shader.setUniform("size", sf::Vector2f(size, size));
+        m_shader->setUniform("size", sf::Vector2f(size, size));
     }
 
     void onDraw(sf::RenderTarget& target, sf::RenderStates states) const override
     {
         // Prepare the render state
-        states.shader    = &m_shader;
+        states.shader    = &*m_shader;
         states.texture   = &m_logoTexture;
         states.transform = m_transform;
 
@@ -326,10 +319,10 @@ public:
     }
 
 private:
-    sf::Texture     m_logoTexture;
-    sf::Transform   m_transform;
-    sf::Shader      m_shader;
-    sf::VertexArray m_pointCloud;
+    sf::Texture               m_logoTexture;
+    sf::Transform             m_transform;
+    std::optional<sf::Shader> m_shader;
+    sf::VertexArray           m_pointCloud;
 };
 
 
@@ -346,9 +339,7 @@ int main()
     window.setVerticalSyncEnabled(true);
 
     // Load the application font and pass it to the Effect class
-    sf::Font font;
-    if (!font.loadFromFile("resources/tuffy.ttf"))
-        return EXIT_FAILURE;
+    const auto font = sf::Font::loadFromFile("resources/tuffy.ttf").value();
     Effect::setFont(font);
 
     // Create the effects

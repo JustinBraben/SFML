@@ -8,13 +8,12 @@
 int main()
 {
     // Audio
-    [[maybe_unused]] const sf::InputSoundFile      inputSoundFile;
     [[maybe_unused]] const sf::SoundBufferRecorder soundBufferRecorder;
     [[maybe_unused]] const sf::Music               music;
 
     // Graphics
     [[maybe_unused]] const sf::Color          color;
-    [[maybe_unused]] const sf::Font           font;
+    [[maybe_unused]] const sf::IntRect        rect;
     [[maybe_unused]] const sf::RenderWindow   renderWindow;
     [[maybe_unused]] const sf::RectangleShape rectangleShape;
     [[maybe_unused]] const sf::Vertex         vertex;

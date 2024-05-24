@@ -461,7 +461,7 @@ struct GlContext::Impl
     ////////////////////////////////////////////////////////////
     std::shared_ptr<UnsharedGlObjects> unsharedGlObjects; //!< The current object's handle to unshared objects
     const std::uint64_t                id{
-        []()
+        []
         {
             static std::atomic<std::uint64_t> atomicId(1); // start at 1, zero is "no context"
             return atomicId.fetch_add(1);
@@ -665,7 +665,7 @@ std::unique_ptr<GlContext> GlContext::create(const ContextSettings& settings, co
 
 
 ////////////////////////////////////////////////////////////
-bool GlContext::isExtensionAvailable(const char* name)
+bool GlContext::isExtensionAvailable(std::string_view name)
 {
     // If this function is called before any context is available,
     // the shared context will be created for the duration of this call
