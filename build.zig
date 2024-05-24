@@ -38,7 +38,16 @@ pub fn build(b: *std.Build) void {
 
     sfml_system_lib.addIncludePath(.{ .path = "include" });
     sfml_system_lib.addIncludePath(.{ .path = "src" });
-    sfml_system_lib.addIncludePath(.{ .path = "extlibs/headers" });
+    sfml_system_lib.addIncludePath(.{ .path = "extlibs/headers/glad/include" });
+    sfml_system_lib.addIncludePath(.{ .path = "extlibs/headers/stb_image" });
+    sfml_system_lib.addIncludePath(.{ .path = "extlibs/headers/freetype2" });
+    sfml_system_lib.addIncludePath(.{ .path = "extlibs/headers/ogg" });
+    sfml_system_lib.addIncludePath(.{ .path = "extlibs/headers/vorbis" });
+    // sfml_system_lib.addIncludePath(.{ .path = "extlibs/headers" });
+
+    sfml_system_lib.addConfigHeader(b.addConfigHeader(
+        .{ .style = .blank, }, .{ .DEBUG = 1 }
+        ));
 
     sfml_system_lib.addCSourceFiles(.{
         .files = &generic_system_src_files,
@@ -49,9 +58,9 @@ pub fn build(b: *std.Build) void {
 
     switch (t.os.tag) {
         .windows => {
-            sfml_system_lib.addCSourceFiles(.{
-                .files = &windows_system_src_files,
-            });
+            // sfml_system_lib.addCSourceFiles(.{
+            //     .files = &windows_system_src_files,
+            // });
         },
         .macos => {
 
@@ -61,7 +70,11 @@ pub fn build(b: *std.Build) void {
         },
     }
 
-    sfml_system_lib.installHeadersDirectory("extlibs/headers", "extlibs/headers");
+    sfml_system_lib.installHeadersDirectory("extlibs/headers/glad/include", "extlibs/headers/glad/include/glad");
+    sfml_system_lib.installHeadersDirectory("extlibs/headers/stb_image", "extlibs/headers/stb_image");
+    sfml_system_lib.installHeadersDirectory("extlibs/headers/freetype2", "extlibs/headers/freetype2");
+    sfml_system_lib.installHeadersDirectory("extlibs/headers/ogg", "extlibs/headers/ogg");
+    sfml_system_lib.installHeadersDirectory("extlibs/headers/vorbis", "extlibs/headers/vorbis");
     sfml_system_lib.installHeadersDirectory("include", "include");
     sfml_system_lib.installHeadersDirectory("src", "src");
 
